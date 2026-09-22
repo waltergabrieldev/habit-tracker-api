@@ -26,33 +26,33 @@ FASE 0 - AMBIENTE (JA FEITO / EM ANDAMENTO)
 [x] Gerar projeto base (nest new habit-tracker-api, ESM)
 [x] Instalar Docker Desktop
 [x] Instalar Insomnia ou Postman (testar endpoints)
-[ ] Configurar Git + criar repositorio no GitHub
+[x] Configurar Git + criar repositorio no GitHub
 
 
 ==================================================================
 FASE 1 - BANCO DE DADOS
 ==================================================================
-[ ] Criar docker-compose.yml com um servico PostgreSQL
-[ ] Subir o banco (docker compose up -d)
-[ ] Instalar dependencias:
+[x] Criar docker-compose.yml com um servico PostgreSQL
+[x] Subir o banco (docker compose up -d)
+[x] Instalar dependencias:
     pnpm add @nestjs/typeorm typeorm pg
-[ ] Configurar TypeOrmModule no app.module.ts (host, porta, user,
+[x] Configurar TypeOrmModule no app.module.ts (host, porta, user,
     senha, nome do banco vindos de variaveis de ambiente)
-[ ] Instalar @nestjs/config e criar arquivo .env
+[X] Instalar @nestjs/config e criar arquivo .env
     pnpm add @nestjs/config
-[ ] Adicionar .env ao .gitignore (nunca subir senha pro GitHub)
+[X] Adicionar .env ao .gitignore (nunca subir senha pro GitHub)
 
 
 ==================================================================
 FASE 2 - MODELO DE DADOS (ENTITIES)
 ==================================================================
-[ ] Entity User
+[x] Entity User
     - id (UUID)
     - email (unique)
     - password_hash
     - created_at
 
-[ ] Entity Habit
+[x] Entity Habit
     - id (UUID)
     - user_id (FK -> User)
     - name
@@ -60,21 +60,21 @@ FASE 2 - MODELO DE DADOS (ENTITIES)
     - target_count
     - created_at
 
-[ ] Entity HabitLog
+[x] Entity HabitLog
     - id (UUID)
     - habit_id (FK -> Habit)
     - completed_at (timestamp)
     - note (opcional)
 
-[ ] Definir relacionamentos no TypeORM (@OneToMany / @ManyToOne)
-[ ] Gerar e rodar a primeira migration (nao usar synchronize:true
+[x] Definir relacionamentos no TypeORM (@OneToMany / @ManyToOne)
+[x] Gerar e rodar a primeira migration (nao usar synchronize:true
     em producao - so em dev)
 
 
 ==================================================================
 FASE 3 - MODULO DE AUTENTICACAO
 ==================================================================
-[ ] Instalar dependencias:
+[x] Instalar dependencias:
     pnpm add @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
     pnpm add -D @types/passport-jwt @types/bcrypt
 [ ] Criar AuthModule, AuthController, AuthService
