@@ -1,0 +1,148 @@
+==================================================================
+ROADMAP - HABIT TRACKER API (NestJS + PostgreSQL)
+==================================================================
+
+STACK DEFINIDA
+------------------------------------------------------------------
+- Runtime: Node.js 24 (LTS)
+- Gerenciador de pacotes: pnpm
+- Framework: NestJS (ESM)
+- Banco de dados: PostgreSQL (via Docker)
+- ORM: TypeORM
+- Autenticação: JWT (access token curto + refresh token)
+- Hash de senha: bcrypt
+- Validação: class-validator + class-transformer
+- Documentação: Swagger/OpenAPI
+- Testes: Jest (integração, já vem com o Nest)
+- Deploy: Docker + Render/Railway/Fly.io
+
+
+==================================================================
+FASE 0 - AMBIENTE (JA FEITO / EM ANDAMENTO)
+==================================================================
+[x] Instalar Node.js 24 LTS
+[x] Instalar pnpm
+[x] Instalar Nest CLI
+[x] Gerar projeto base (nest new habit-tracker-api, ESM)
+[x] Instalar Docker Desktop
+[x] Instalar Insomnia ou Postman (testar endpoints)
+[ ] Configurar Git + criar repositorio no GitHub
+
+
+==================================================================
+FASE 1 - BANCO DE DADOS
+==================================================================
+[ ] Criar docker-compose.yml com um servico PostgreSQL
+[ ] Subir o banco (docker compose up -d)
+[ ] Instalar dependencias:
+    pnpm add @nestjs/typeorm typeorm pg
+[ ] Configurar TypeOrmModule no app.module.ts (host, porta, user,
+    senha, nome do banco vindos de variaveis de ambiente)
+[ ] Instalar @nestjs/config e criar arquivo .env
+    pnpm add @nestjs/config
+[ ] Adicionar .env ao .gitignore (nunca subir senha pro GitHub)
+
+
+==================================================================
+FASE 2 - MODELO DE DADOS (ENTITIES)
+==================================================================
+[ ] Entity User
+    - id (UUID)
+    - email (unique)
+    - password_hash
+    - created_at
+
+[ ] Entity Habit
+    - id (UUID)
+    - user_id (FK -> User)
+    - name
+    - frequency (daily, weekly, custom)
+    - target_count
+    - created_at
+
+[ ] Entity HabitLog
+    - id (UUID)
+    - habit_id (FK -> Habit)
+    - completed_at (timestamp)
+    - note (opcional)
+
+[ ] Definir relacionamentos no TypeORM (@OneToMany / @ManyToOne)
+[ ] Gerar e rodar a primeira migration (nao usar synchronize:true
+    em producao - so em dev)
+
+
+==================================================================
+FASE 3 - MODULO DE AUTENTICACAO
+==================================================================
+[ ] Instalar dependencias:
+    pnpm add @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
+    pnpm add -D @types/passport-jwt @types/bcrypt
+[ ] Criar AuthModule, AuthController, AuthService
+[ ] POST /auth/register (hash da senha com bcrypt antes de salvar)
+[ ] POST /auth/login (retorna access token + refresh token)
+[ ] POST /auth/refresh (troca refresh token valido por novo access
+    token)
+[ ] POST /auth/logout (invalida o refresh token salvo no banco)
+[ ] Criar JwtStrategy (passport-jwt) para proteger rotas
+[ ] Criar Guard (JwtAuthGuard) e aplicar nas rotas de Habit/Log
+
+
+==================================================================
+FASE 4 - MODULO DE HABITS
+==================================================================
+[ ] Criar HabitsModule, HabitsController, HabitsService
+[ ] DTOs com class-validator (CreateHabitDto, UpdateHabitDto)
+[ ] GET    /habits            - lista habitos do usuario logado
+[ ] POST   /habits            - cria habito
+[ ] GET    /habits/:id
+[ ] PATCH  /habits/:id
+[ ] DELETE /habits/:id
+[ ] Garantir que um usuario so acesse os proprios habitos (checar
+    user_id no service, nao so no controller)
+
+
+==================================================================
+FASE 5 - MODULO DE LOGS (CHECK-INS)
+==================================================================
+[ ] Criar LogsModule (ou dentro do proprio HabitsModule)
+[ ] POST   /habits/:id/logs   - marca habito como feito hoje
+[ ] GET    /habits/:id/logs   - historico
+[ ] DELETE /logs/:id          - desfazer um check
+[ ] GET    /habits/:id/streak - calcula sequencia atual e recorde
+[ ] GET    /stats/summary     - visao geral de consistencia
+
+
+==================================================================
+FASE 6 - QUALIDADE E BOAS PRATICAS
+==================================================================
+[ ] Paginacao em GET /habits e GET /habits/:id/logs (?page&limit)
+[ ] Tratamento de erros global (Exception Filter do Nest)
+[ ] Codigos HTTP corretos (401 x 403, 404 x 400)
+[ ] Rate limiting no login (evitar brute force) - @nestjs/throttler
+[ ] Testes de integracao dos principais fluxos (auth, criar habito,
+    dar check-in)
+[ ] Documentacao Swagger (@nestjs/swagger) gerada automaticamente
+
+
+==================================================================
+FASE 7 - DEPLOY
+==================================================================
+[ ] Criar Dockerfile (multi-stage build)
+[ ] Testar build da imagem localmente
+[ ] Subir em servico gratuito (Render, Railway ou Fly.io)
+[ ] Banco de producao (o proprio Render/Railway oferecem Postgres
+    gerenciado gratuito no plano free)
+[ ] Variaveis de ambiente configuradas no servico de deploy (nunca
+    hardcoded)
+[ ] README.md caprichado no GitHub explicando o projeto, stack,
+    como rodar localmente e endpoints disponiveis
+
+
+==================================================================
+EXTRAS (SE SOBRAR TEMPO / PARA SE DESTACAR MAIS)
+==================================================================
+[ ] WebSocket para notificar quando um streak esta prestes a
+    quebrar
+[ ] Cache com Redis para GET /stats/summary
+[ ] CI/CD simples com GitHub Actions (roda os testes a cada push)
+[ ] Observabilidade basica (logs estruturados)
